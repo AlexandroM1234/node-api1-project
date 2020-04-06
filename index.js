@@ -59,6 +59,28 @@ server.get("/api/users/:id", (req, res) => {
   }
 });
 
+// adding a new user
+server.post("/api/users", (req, res) => {
+  const newUser = req.body;
+  const { name, bio } = req.body;
+
+  if (!name || !bio) {
+    res
+      .status(201)
+      .json({ errorMessage: "Please provide a name and bio for the user" });
+  } else if (newUser) {
+    users.push(newUser);
+    res.status(201).json(users);
+  } else {
+    res
+      .status(500)
+      .json({
+        errorMessage:
+          "There was an error while saving the user to the database",
+      });
+  }
+});
+
 // server listening on localhost 5000
 const port = 5000;
 server.listen(port, () =>
