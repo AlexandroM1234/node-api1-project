@@ -66,7 +66,7 @@ server.post("/api/users", (req, res) => {
 
   if (!name || !bio) {
     res
-      .status(201)
+      .status(400)
       .json({ errorMessage: "Please provide a name and bio for the user" });
   } else if (newUser) {
     users.push(newUser);
@@ -92,6 +92,33 @@ server.delete("/api/users/:id", (req, res) => {
     res
       .status(404)
       .json({ errorMessage: "The user with the specified ID does not exist." });
+  }
+});
+
+// modifying an existing user
+server.put("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, bio } = req.body;
+  const findUser = (user) => {
+    return user.id == id;
+  };
+  const userFound = users.find(findUser);
+  if (userFound) {
+    if (name) userFound.name = name;
+    if (bio) userFound.bio = bio;
+    res.status(200).json(users);
+  } else if (!name || !bio) {
+    res
+      .status(400)
+      .json({ errorMessage: "Please provide name and bio for the user" });
+  } else if (!foundUser) {
+    res
+      .status(404)
+      .json({ errorMessage: "The user with the specified ID does not exist" });
+  } else {
+    res
+      .status(500)
+      .json({ errorMessage: "The user information could not be modified." });
   }
 });
 
